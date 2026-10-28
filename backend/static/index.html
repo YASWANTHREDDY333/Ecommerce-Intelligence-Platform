@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>OmniPulse | E-Commerce Intelligence Platform</title>
+  
+  <!-- Modern Typography (Plus Jakarta Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Leaflet Map CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Custom Glassmorphism Stylesheet -->
+  <link rel="stylesheet" href="/static/css/omnipulse_style.css?v=2.0.0" />
+</head>
+<body>
+
+  <!-- ======================================================================
+       Header & Navigation Bar
+       ====================================================================== -->
+  <header class="header-bar">
+    <div class="brand-wrapper">
+      <div class="brand-icon">
+        <i data-lucide="activity" style="width: 24px; height: 24px;"></i>
+      </div>
+      <div class="brand-text">
+        <h1>OmniPulse</h1>
+        <p>E-Commerce Intelligence Platform</p>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-tab-btn active" data-tab="tab-overview">
+        <i data-lucide="layout-dashboard" style="width: 16px; height: 16px;"></i> Overview
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-sales">
+        <i data-lucide="trending-up" style="width: 16px; height: 16px;"></i> Sales & Revenue
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-customers">
+        <i data-lucide="users" style="width: 16px; height: 16px;"></i> Customer RFM
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-inventory">
+        <i data-lucide="boxes" style="width: 16px; height: 16px;"></i> Smart Inventory
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-logistics">
+        <i data-lucide="truck" style="width: 16px; height: 16px;"></i> Logistics & SLA
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-map">
+        <i data-lucide="map" style="width: 16px; height: 16px;"></i> Geospatial Map
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-reviews">
+        <i data-lucide="star" style="width: 16px; height: 16px;"></i> Reviews & CSAT
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-ai">
+        <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i> AI Insights & What-If
+      </button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        <span>MySQL 8.0 Live</span>
+      </div>
+
+      <a href="/api/export/inventory-alerts" class="btn-icon" title="Export Inventory Alerts CSV">
+        <i data-lucide="download" style="width: 15px; height: 15px;"></i> Export Alerts
+      </a>
+
+      <button id="btn-refresh" class="btn-icon" onclick="window.location.reload(true)" title="Hard Reload Dashboard">
+        <i data-lucide="rotate-cw" style="width: 15px; height: 15px;"></i> Reload Page
+      </button>
+
+      <a href="/docs" target="_blank" class="btn-icon">
+        <i data-lucide="code" style="width: 15px; height: 15px;"></i> API Docs
+      </a>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       Main Content Container
+       ====================================================================== -->
+  <main class="main-container">
+
+    <!-- TAB 1: EXECUTIVE OVERVIEW -->
+    <section id="tab-overview" class="tab-pane active">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Executive Intelligence Overview</h2>
+          <p>Real-time enterprise metrics, revenue performance, and operational health</p>
+        </div>
+      </div>
+
+      <!-- Primary 4 KPI Stat Cards -->
+      <div class="kpi-grid-primary">
+        <div class="glass-card stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Delivered Revenue</span>
+            <div class="stat-icon icon-indigo">
+              <i data-lucide="dollar-sign" style="width: 18px; height: 18px;"></i>
+            </div>
+          </div>
+          <div id="kpi-revenue" class="stat-value">$13.59M</div>
+          <div class="stat-footer">
+            <span class="badge-pill badge-emerald">
+              <i data-lucide="arrow-up-right" style="width: 12px; height: 12px;"></i> Validated
+            </span>
+            <span>Historical Olist dataset</span>
+          </div>
+        </div>
+
+        <div class="glass-card stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Delivered Orders</span>
+            <div class="stat-icon icon-cyan">
+              <i data-lucide="shopping-cart" style="width: 18px; height: 18px;"></i>
+            </div>
+          </div>
+          <div id="kpi-orders" class="stat-value">96,478</div>
+          <div class="stat-footer">
+            <span class="badge-pill badge-cyan">97% Fulfillment</span>
+            <span>Across 27 Brazilian states</span>
+          </div>
+        </div>
+
+        <div class="glass-card stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Unique Customers</span>
+            <div class="stat-icon icon-purple">
+              <i data-lucide="users-round" style="width: 18px; height: 18px;"></i>
+            </div>
+          </div>
+          <div id="kpi-customers" class="stat-value">93,358</div>
+          <div class="stat-footer">
+            <span class="badge-pill badge-purple">4 RFM Segments</span>
+            <span>Segmented & clustered</span>
+          </div>
+        </div>
+
+        <div class="glass-card stat-card">
+          <div class="stat-header">
+            <span class="stat-label">On-Time Delivery Rate</span>
+            <div class="stat-icon icon-emerald">
+              <i data-lucide="shield-check" style="width: 18px; height: 18px;"></i>
+            </div>
+          </div>
+          <div id="kpi-ontime" class="stat-value">92.4%</div>
+          <div class="stat-footer">
+            <span class="badge-pill badge-emerald">Early / On-Time</span>
+            <span>Est. vs actual delivery</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secondary 4 KPI Cards -->
+      <div class="kpi-grid-secondary">
+        <div class="glass-card stat-card" style="padding: 1rem;">
+          <div class="stat-header">
+            <span class="stat-label">Avg Order Value (AOV)</span>
+            <div class="stat-icon icon-indigo"><i data-lucide="receipt" style="width:16px;height:16px;"></i></div>
+          </div>
+          <div id="kpi-aov" class="stat-value" style="font-size: 1.4rem;">$137.05</div>
+        </div>
+
+        <div class="glass-card stat-card" style="padding: 1rem;">
+          <div class="stat-header">
+            <span class="stat-label">Avg Delivery Days</span>
+            <div class="stat-icon icon-cyan"><i data-lucide="clock" style="width:16px;height:16px;"></i></div>
+          </div>
+          <div id="kpi-deliv-days" class="stat-value" style="font-size: 1.4rem;">12.5 days</div>
+        </div>
+
+        <div class="glass-card stat-card" style="padding: 1rem;">
+          <div class="stat-header">
+            <span class="stat-label">Customer CSAT</span>
+            <div class="stat-icon icon-amber"><i data-lucide="star" style="width:16px;height:16px;"></i></div>
+          </div>
+          <div id="kpi-csat" class="stat-value" style="font-size: 1.4rem;">4.09 / 5.0</div>
+        </div>
+
+        <div class="glass-card stat-card" style="padding: 1rem;">
+          <div class="stat-header">
+            <span class="stat-label">Open Stock Alerts</span>
+            <div class="stat-icon icon-rose"><i data-lucide="alert-triangle" style="width:16px;height:16px;"></i></div>
+          </div>
+          <div id="kpi-alerts" class="stat-value" style="font-size: 1.4rem;">21,898</div>
+          <div class="stat-footer">
+            <span id="badge-critical-alerts" class="badge-pill badge-rose">Critical</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Pulse Banner -->
+      <div class="ai-pulse-banner">
+        <div class="ai-pulse-left">
+          <div class="ai-icon-bubble">
+            <i data-lucide="sparkles" style="width: 22px; height: 22px;"></i>
+          </div>
+          <div class="ai-pulse-content">
+            <h4>OmniPulse Strategic Recommendation</h4>
+            <p>Immediate action recommended: 36,704 "At Risk" customers hold $5.1M in historical purchase value. Automated win-back campaigns can recover up to 14% retention.</p>
+          </div>
+        </div>
+        <button class="btn-ai-action" onclick="document.querySelector('[data-tab=tab-ai]').click()">
+          View AI Recommendations <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+        </button>
+      </div>
+
+      <!-- Main Visualizations Grid -->
+      <div class="chart-grid-2">
+        <div class="glass-card">
+          <div class="chart-card-header">
+            <div>
+              <h3><i data-lucide="line-chart" style="width: 18px; height: 18px; color: var(--accent-indigo)"></i> Revenue & Orders Velocity</h3>
+              <p>Monthly delivered sales volume ($) vs order counts (2017 - 2018)</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-revenue"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="chart-card-header">
+            <div>
+              <h3><i data-lucide="pie-chart" style="width: 18px; height: 18px; color: var(--accent-emerald)"></i> Delivery SLA Health</h3>
+              <p>Early vs On-Time vs Delayed orders</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-delivery-sla"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: SALES & REVENUE -->
+    <section id="tab-sales" class="tab-pane">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Sales & Category Performance</h2>
+          <p>Product category revenues, payment methods breakdown, and SKU rankings</p>
+        </div>
+      </div>
+
+      <div class="chart-grid-equal">
+        <div class="glass-card">
+          <div class="chart-card-header">
+            <h3><i data-lucide="bar-chart-3" style="width:18px;height:18px;color:var(--accent-indigo)"></i> Top 10 Product Categories by Revenue</h3>
+          </div>
+          <div class="chart-wrapper chart-wrapper-tall">
+            <canvas id="chart-categories"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="chart-card-header">
+            <h3><i data-lucide="credit-card" style="width:18px;height:18px;color:var(--accent-cyan)"></i> Payment Methods Distribution</h3>
+          </div>
+          <div class="chart-wrapper chart-wrapper-tall">
+            <canvas id="chart-payments"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top 10 Products Table -->
+      <div class="glass-card" style="margin-top: 1.5rem;">
+        <div class="chart-card-header">
+          <h3><i data-lucide="award" style="width:18px;height:18px;color:var(--accent-amber)"></i> Top 10 Revenue Generating SKUs</h3>
+          <p>Delivered product value and current stock status</p>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Product ID</th>
+                <th>Category</th>
+                <th>Total Revenue</th>
+                <th>Units Sold</th>
+                <th>Current Stock</th>
+                <th>Stock Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-top-products">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: CUSTOMER RFM INTELLIGENCE -->
+    <section id="tab-customers" class="tab-pane">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Customer RFM Segmentation & Behavior</h2>
+          <p>Data-driven Recency, Frequency, and Monetary value clustering across 93,358 customers</p>
+        </div>
+      </div>
+
+      <div class="chart-grid-2">
+        <div class="glass-card">
+          <div class="chart-card-header">
+            <h3><i data-lucide="pie-chart" style="width:18px;height:18px;color:var(--accent-purple)"></i> Segment Distribution</h3>
+            <p>Customer share across RFM clusters</p>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-customer-segments"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="chart-card-header">
+            <h3><i data-lucide="bar-chart-2" style="width:18px;height:18px;color:var(--accent-emerald)"></i> Segment Revenue Value</h3>
+            <p>Monetary contribution by cluster</p>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-segment-value"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer Segment Matrix Table -->
+      <div class="glass-card" style="margin-top: 1.5rem;">
+        <div class="chart-card-header">
+          <h3><i data-lucide="layers" style="width:18px;height:18px;color:var(--accent-cyan)"></i> Segment RFM Benchmark Matrix</h3>
+          <a href="/api/export/customer-segments" class="btn-icon">
+            <i data-lucide="download" style="width:14px;height:14px"></i> Export CSV
+          </a>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Segment Name</th>
+                <th>Customer Count</th>
+                <th>Avg Recency</th>
+                <th>Avg Frequency</th>
+                <th>Avg Monetary Spend</th>
+                <th>Total Revenue</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-customer-segments">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Geographic Distribution Chart -->
+      <div class="glass-card" style="margin-top: 1.5rem;">
+        <div class="chart-card-header">
+          <h3><i data-lucide="map-pin" style="width:18px;height:18px;color:var(--accent-rose)"></i> Top States by Delivered Revenue</h3>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="chart-geography"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: SMART INVENTORY & STOCK ALERT CENTER -->
+    <section id="tab-inventory" class="tab-pane">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Smart Inventory & Stock Alert Center</h2>
+          <p>Automated safety stock calculation, reorder level forecasting, and real-time stockout mitigation</p>
+        </div>
+      </div>
+
+      <!-- Inventory KPI Counters -->
+      <div class="kpi-grid-primary">
+        <div class="glass-card stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Total SKUs Monitored</span>
+            <div class="stat-icon icon-indigo"><i data-lucide="box" style="width:18px;height:18px;"></i></div>
+          </div>
+          <div id="inv-total-skus" class="stat-value">32,951</div>
+          <div class="stat-footer"><span>Catalog SKUs</span></div>
+        </div>
+
+        <div class="glass-card stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Critical Stock Alerts</span>
+            <div class="stat-icon icon-rose"><i data-lucide="alert-octagon" style="width:18px;height:18px;"></i></div>
+          </div>
+          <div id="inv-critical-count" class="stat-value" style="color: #fb7185">16,573</div>
+          <div class="stat-footer"><span class="badge-pill badge-rose">Stock &le; Safety Stock</span></div>
+        </div>
+
+        <div class="glass-card stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Low Stock Alerts</span>
+            <div class="stat-icon icon-amber"><i data-lucide="alert-triangle" style="width:18px;height:18px;"></i></div>
+          </div>
+          <div id="inv-low-count" class="stat-value" style="color: #fbbf24">5,325</div>
+          <div class="stat-footer"><span class="badge-pill badge-amber">Stock &le; Reorder Point</span></div>
+        </div>
+
+        <div class="glass-card stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Healthy Stock SKUs</span>
+            <div class="stat-icon icon-emerald"><i data-lucide="check-circle" style="width:18px;height:18px;"></i></div>
+          </div>
+          <div id="inv-healthy-count" class="stat-value" style="color: #34d399">11,053</div>
+          <div class="stat-footer"><span class="badge-pill badge-emerald">Optimal Buffer</span></div>
+        </div>
+      </div>
+
+      <!-- Alerts Section -->
+      <div class="glass-card" style="margin-bottom: 2rem;">
+        <div class="chart-card-header">
+          <h3><i data-lucide="bell-ring" style="width:18px;height:18px;color:var(--accent-rose)"></i> Stock Alerts Command Table</h3>
+          <div class="filter-group">
+            <a href="/api/export/inventory-alerts" class="btn-icon">
+              <i data-lucide="download" style="width:14px;height:14px"></i> Export CSV
+            </a>
+            <select id="select-alert-filter" class="select-filter" onchange="loadInventoryAlerts()">
+              <option value="">All Alerts</option>
+              <option value="CRITICAL" selected>Critical Only</option>
+              <option value="LOW_STOCK">Low Stock Only</option>
+              <option value="OPEN">Open Alerts</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Alert Type</th>
+                <th>Product ID</th>
+                <th>Category</th>
+                <th>Current Stock</th>
+                <th>Reorder Level</th>
+                <th>Recommended Restock</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-inventory-alerts">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SKU Explorer Section -->
+      <div class="glass-card">
+        <div class="chart-card-header">
+          <h3><i data-lucide="search" style="width:18px;height:18px;color:var(--accent-cyan)"></i> Catalog SKU Stock Explorer</h3>
+          <div class="filter-group">
+            <input type="text" id="input-inv-search" class="input-search" placeholder="Search product ID or category..." oninput="loadInventoryItems()" />
+            <select id="select-inv-status" class="select-filter" onchange="loadInventoryItems()">
+              <option value="">All Stock Statuses</option>
+              <option value="CRITICAL">Critical</option>
+              <option value="LOW">Low Stock</option>
+              <option value="HEALTHY">Healthy</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Product ID</th>
+                <th>Category</th>
+                <th>Current Stock</th>
+                <th>Reorder Level</th>
+                <th>Safety Stock</th>
+                <th>Avg Daily Sales</th>
+                <th>Lead Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-inventory-items">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: LOGISTICS & SLA -->
+    <section id="tab-logistics" class="tab-pane">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Logistics & Fulfillment SLA Intelligence</h2>
+          <p>Carrier transit durations, estimated vs actual delivery variance, and state-level bottlenecks</p>
+        </div>
+      </div>
+
+      <div class="kpi-grid-primary">
+        <div class="glass-card stat-card">
+          <div class="stat-header"><span class="stat-label">Total Delivered Orders</span><div class="stat-icon icon-cyan"><i data-lucide="package" style="width:18px;height:18px;"></i></div></div>
+          <div id="log-delivered" class="stat-value">96,478</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-header"><span class="stat-label">Early Deliveries</span><div class="stat-icon icon-emerald"><i data-lucide="zap" style="width:18px;height:18px;"></i></div></div>
+          <div id="log-early" class="stat-value" style="color:#34d399">88.5%</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-header"><span class="stat-label">On-Time Deliveries</span><div class="stat-icon icon-cyan"><i data-lucide="calendar-check" style="width:18px;height:18px;"></i></div></div>
+          <div id="log-ontime" class="stat-value" style="color:#38bdf8">3.9%</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-header"><span class="stat-label">Late Deliveries</span><div class="stat-icon icon-rose"><i data-lucide="clock-alert" style="width:18px;height:18px;"></i></div></div>
+          <div id="log-late" class="stat-value" style="color:#fb7185">7.6%</div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-top: 1.5rem;">
+        <div class="chart-card-header">
+          <h3><i data-lucide="map" style="width:18px;height:18px;color:var(--accent-indigo)"></i> State Shipping SLA & Delay Matrix</h3>
+          <a href="/api/export/state-logistics" class="btn-icon">
+            <i data-lucide="download" style="width:14px;height:14px"></i> Export CSV
+          </a>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Destination State</th>
+                <th>Delivered Orders</th>
+                <th>Total Value</th>
+                <th>Avg Transit Days</th>
+                <th>Late Delivery Rate</th>
+                <th>SLA Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-logistics-states">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 8: GEOSPATIAL MAP INTELLIGENCE -->
+    <section id="tab-map" class="tab-pane">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Geospatial Intelligence & Logistics Hotspots</h2>
+          <p>Interactive regional telemetry across 1M+ geolocation records and 27 Brazilian states</p>
+        </div>
+        <div class="header-actions">
+          <a href="/api/export/state-logistics" class="btn-icon">
+            <i data-lucide="download" style="width:14px;height:14px"></i> Export State Data
+          </a>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 1.5rem; padding: 1.25rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:1rem;">
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <i data-lucide="globe" style="width:20px;height:20px;color:var(--accent-cyan)"></i>
+            <span style="font-weight:700; font-size:0.95rem;">National Fulfillment Heatmap</span>
+          </div>
+          <div style="display:flex; gap:1.25rem; font-size:0.775rem;">
+            <span style="display:flex; align-items:center; gap:0.4rem;"><span style="width:10px;height:10px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981"></span> Optimal SLA (&lt;5% late)</span>
+            <span style="display:flex; align-items:center; gap:0.4rem;"><span style="width:10px;height:10px;border-radius:50%;background:#06b6d4;box-shadow:0 0 6px #06b6d4"></span> Standard SLA (5-10% late)</span>
+            <span style="display:flex; align-items:center; gap:0.4rem;"><span style="width:10px;height:10px;border-radius:50%;background:#f43f5e;box-shadow:0 0 6px #f43f5e"></span> Delayed Route (&gt;10% late)</span>
+          </div>
+        </div>
+        <div id="map-container"></div>
+      </div>
+    </section>
+
+    <!-- TAB 6: REVIEWS & CSAT -->
+    <section id="tab-reviews" class="tab-pane">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Customer Satisfaction & Review Analytics</h2>
+          <p>Rating score distributions, customer sentiments, and the quantifiable impact of shipping delays</p>
+        </div>
+      </div>
+
+      <div class="kpi-grid-primary" style="grid-template-columns: 1fr 1fr;">
+        <div class="glass-card stat-card">
+          <div class="stat-header"><span class="stat-label">Overall Customer CSAT</span><div class="stat-icon icon-amber"><i data-lucide="star" style="width:18px;height:18px;"></i></div></div>
+          <div id="rev-avg-score" class="stat-value">4.09 / 5.0</div>
+          <div class="stat-footer"><span>Average score across all orders</span></div>
+        </div>
+
+        <div class="glass-card stat-card">
+          <div class="stat-header"><span class="stat-label">Total Verified Reviews</span><div class="stat-icon icon-purple"><i data-lucide="message-square" style="width:18px;height:18px;"></i></div></div>
+          <div id="rev-total-reviews" class="stat-value">99,224</div>
+          <div class="stat-footer"><span>99.8% order coverage</span></div>
+        </div>
+      </div>
+
+      <div class="chart-grid-equal" style="margin-top: 1.5rem;">
+        <div class="glass-card">
+          <div class="chart-card-header">
+            <h3><i data-lucide="bar-chart" style="width:18px;height:18px;color:var(--accent-amber)"></i> Star Rating Distribution (1 to 5 Stars)</h3>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-review-dist"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="chart-card-header">
+            <h3><i data-lucide="alert-circle" style="width:18px;height:18px;color:var(--accent-rose)"></i> Delivery SLA Impact on Rating Score</h3>
+            <p>How shipping delay directly erodes customer reviews</p>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-rating-delay"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7: AI INSIGHTS & WHAT-IF SIMULATOR -->
+    <section id="tab-ai" class="tab-pane">
+      <div class="section-header">
+        <div class="section-title">
+          <h2>AI Intelligence & Prescriptive Decision Engine</h2>
+          <p>Autonomous heuristics evaluating inventory exposures, churn interventions, and logistics optimization</p>
+        </div>
+      </div>
+
+      <!-- What-If Scenario Simulator Card -->
+      <div class="glass-card simulator-card">
+        <div class="chart-card-header">
+          <div>
+            <h3><i data-lucide="sliders" style="width:20px;height:20px;color:var(--accent-purple)"></i> What-If Revenue & CSAT Growth Simulator</h3>
+            <p>Model predictive financial growth and customer satisfaction by adjusting operational levers</p>
+          </div>
+          <button class="btn-ai-action" onclick="resetSimulator()">
+            <i data-lucide="rotate-ccw" style="width:14px;height:14px"></i> Reset Scenarios
+          </button>
+        </div>
+
+        <div class="simulator-layout">
+          <!-- Left: Sliders -->
+          <div>
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Transit Delay Reduction:</span>
+                <span id="val-delay-reduction" class="slider-val-badge">2.0 days</span>
+              </div>
+              <input type="range" id="slider-delay" class="range-slider" min="0" max="8" step="0.5" value="2.0" oninput="updateSimulation()" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>At-Risk Customer Win-Back Rate:</span>
+                <span id="val-churn-winback" class="slider-val-badge">10%</span>
+              </div>
+              <input type="range" id="slider-churn" class="range-slider" min="0" max="30" step="1" value="10" oninput="updateSimulation()" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Critical Stockout Prevention:</span>
+                <span id="val-stockout-prevention" class="slider-val-badge">50%</span>
+              </div>
+              <input type="range" id="slider-stockout" class="range-slider" min="0" max="100" step="5" value="50" oninput="updateSimulation()" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Freight Subsidy / Discount:</span>
+                <span id="val-freight-subsidy" class="slider-val-badge">5%</span>
+              </div>
+              <input type="range" id="slider-freight" class="range-slider" min="0" max="20" step="1" value="5" oninput="updateSimulation()" />
+            </div>
+          </div>
+
+          <!-- Right: Projection Metrics -->
+          <div class="projections-panel">
+            <div class="projection-stat">
+              <span class="projection-label">Projected Net Revenue Impact</span>
+              <div class="projection-number">
+                <span id="sim-growth-usd">+$607,341</span>
+                <span id="sim-growth-pct" class="projection-delta">+4.59%</span>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-top:0.5rem; margin-bottom:1rem;">
+              <div style="background:rgba(255,255,255,0.03); padding:0.75rem; border-radius:8px;">
+                <div style="font-size:0.7rem; color:var(--text-dim); font-weight:700;">RECOVERED CHURN</div>
+                <div id="sim-recovered-churn" style="font-size:1.1rem; font-weight:800; color:#38bdf8;">+$165,658</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.03); padding:0.75rem; border-radius:8px;">
+                <div style="font-size:0.7rem; color:var(--text-dim); font-weight:700;">PROTECTED STOCKOUT</div>
+                <div id="sim-protected-stockout" style="font-size:1.1rem; font-weight:800; color:#c084fc;">+$396,645</div>
+              </div>
+            </div>
+
+            <div class="projection-stat" style="margin-bottom:0;">
+              <span class="projection-label">Projected Customer CSAT</span>
+              <div class="projection-number" style="color:#fbbf24;">
+                <span id="sim-csat">4.29</span>
+                <span style="font-size:1rem; color:var(--text-dim); font-weight:600;">/ 5.0</span>
+                <span id="sim-csat-delta" class="projection-delta" style="background:rgba(245,158,11,0.2); color:#fbbf24;">+0.20★</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="ai-insights-container" class="ai-cards-grid">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       Floating AI Assistant Trigger & Chat Drawer
+       ====================================================================== -->
+  <button id="btn-floating-ai" class="floating-ai-btn" onclick="toggleAIChat()">
+    <i data-lucide="sparkles" style="width:18px;height:18px"></i> Ask OmniPulse AI
+  </button>
+
+  <div id="ai-chat-drawer" class="ai-chat-drawer">
+    <div class="ai-chat-header">
+      <div class="ai-chat-header-title">
+        <i data-lucide="bot" style="width:20px;height:20px;color:var(--accent-cyan)"></i>
+        <span>OmniPulse AI Assistant</span>
+      </div>
+      <button class="btn-close-modal" onclick="toggleAIChat()">&times;</button>
+    </div>
+
+    <div id="ai-chat-messages" class="ai-chat-messages">
+      <div class="chat-bubble bubble-ai">
+        <p>👋 Hello! I am your <strong>OmniPulse AI Assistant</strong>.</p>
+        <p>Ask me anything about sales trends, inventory stockouts, customer churn, or delivery SLAs.</p>
+        <div class="action-chips-container">
+          <span class="action-chip" onclick="askAIChat('What is our current revenue?')">What is our revenue?</span>
+          <span class="action-chip" onclick="askAIChat('Which SKUs have critical stockouts?')">Critical stockouts</span>
+          <span class="action-chip" onclick="askAIChat('What is our customer churn risk?')">Customer churn</span>
+          <span class="action-chip" onclick="askAIChat('Which states have delivery delays?')">Delivery delays</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-chat-input-bar">
+      <input type="text" id="input-ai-chat" class="input-chat" placeholder="Ask a question about your e-commerce data..." onkeydown="if(event.key==='Enter') sendAIChatMessage()" />
+      <button class="btn-chat-send" onclick="sendAIChatMessage()">
+        <i data-lucide="send" style="width:16px;height:16px"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       Restock SKU Modal Dialog
+       ====================================================================== -->
+  <div id="modal-restock" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3><i data-lucide="package-plus" style="width:20px;height:20px;color:var(--accent-cyan);vertical-align:middle"></i> Quick Restock SKU</h3>
+        <button class="btn-close-modal" onclick="closeRestockModal()">&times;</button>
+      </div>
+
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.25rem;">
+        SKU ID: <span id="modal-restock-sku" class="font-mono" style="color:var(--accent-cyan)"></span>
+      </p>
+
+      <input type="hidden" id="modal-restock-product-id" />
+
+      <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.4rem; color:var(--text-muted);">
+        Replenishment Units:
+      </label>
+      <input type="number" id="modal-restock-qty" class="input-search" style="width:100%; margin-bottom:1.25rem;" min="1" />
+
+      <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+        <button class="btn-icon" onclick="closeRestockModal()">Cancel</button>
+        <button class="btn-ai-action" onclick="submitRestock()">
+          <i data-lucide="check" style="width:14px;height:14px"></i> Confirm & Restock
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Main Controller Script -->
+  <script src="/static/js/omnipulse_app.js?v=2.0.0"></script>
+</body>
+</html>

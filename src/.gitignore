@@ -1,0 +1,47 @@
+# Python virtual environment
+venv/
+.venv/
+env/
+ENV/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+logs/
+
+# Large/generated datasets
+data/raw/
+data/cleaned/
+data/processed/
+
+# Generated/test images
+data/test_carto_tile.png
+data/test_esri_tile.jpg
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Build files
+build/
+dist/
+*.egg-info/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
